@@ -12,10 +12,10 @@ namespace RecordTrack.Application.Abstractions
     {
 
         //Sorguda olduğu için, in-memory olsa IEnumarable
-        IQueryable<T> GetAll();
-        IQueryable<T> GetWhere(Expression<Func<T, bool>> method);
+        IQueryable<T> GetAll(bool tracking = true);
+        IQueryable<T> GetWhere(Expression<Func<T, bool>> method, bool tracking = true);
         //Asenkron çalışacaklar Task olarak döner ve name convention olarak sonlarına Async eklenir.
-        Task<T> GetSingleAsync(Expression<Func<T, bool>> method);
-        Task<T> GetByIdAsync(string id);
+        Task<T> GetSingleAsync(Expression<Func<T, bool>> method, bool tracking = true);
+        Task<T> GetByIdAsync(string id, bool tracking = true);
     }
 }

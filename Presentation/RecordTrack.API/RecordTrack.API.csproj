@@ -17,6 +17,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\RecordTrack.Application\RecordTrack.Application.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\RecordTrack.Infrastructure\RecordTrack.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\RecordTrack.Persistance\RecordTrack.Persistance.csproj" />
   </ItemGroup>
 
