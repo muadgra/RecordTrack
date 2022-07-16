@@ -21,4 +21,8 @@
     <ProjectReference Include="..\..\Infrastructure\RecordTrack.Persistance\RecordTrack.Persistance.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
 </Project>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecordTrack.Persistance.Contexts;
 
@@ -11,9 +12,10 @@ using RecordTrack.Persistance.Contexts;
 namespace RecordTrack.Persistance.Migrations
 {
     [DbContext(typeof(RecordTrackDbContext))]
-    partial class RecordTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220714111130_mig_2")]
+    partial class mig_2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -68,18 +70,6 @@ namespace RecordTrack.Persistance.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FileName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StorageType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -151,18 +141,12 @@ namespace RecordTrack.Persistance.Migrations
                 {
                     b.HasBaseType("RecordTrack.Domain.Entities.File");
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
                     b.HasDiscriminator().HasValue("InvoiceFile");
                 });
 
             modelBuilder.Entity("RecordTrack.Domain.Entities.RecordImageFile", b =>
                 {
                     b.HasBaseType("RecordTrack.Domain.Entities.File");
-
-                    b.Property<int>("Width")
-                        .HasColumnType("int");
 
                     b.HasDiscriminator().HasValue("RecordImageFile");
                 });

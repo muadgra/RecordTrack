@@ -1,12 +1,16 @@
 using FluentValidation.AspNetCore;
 using RecordTrack.Application.Validators.Records;
+using RecordTrack.Infrastructure;
 using RecordTrack.Infrastructure.Filters;
+using RecordTrack.Infrastructure.Services.Storage.Local;
 using RecordTrack.Persistance;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddPersistenceServices();
+builder.Services.AddInfrastructureServices();
+builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => 
     policy
     .WithOrigins("http://localhost:4200", "https://localhost:4200")
@@ -31,6 +35,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 //call cors options which are described above as middleware
+app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();
 

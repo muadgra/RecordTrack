@@ -11,6 +11,12 @@ using RecordTrack.Persistance.Contexts;
 using Microsoft.Extensions.Configuration;
 using RecordTrack.Persistence;
 using RecordTrack.Application.Repositories;
+using RecordTrack.Application.Repositories.File;
+using RecordTrack.Persistance.Repositories.File;
+using RecordTrack.Persistance.Repositories.RecordImageFile;
+using RecordTrack.Application.Repositories.RecordImageFile;
+using RecordTrack.Persistance.Repositories.InvoiceFile;
+using RecordTrack.Application.Repositories.InvoiceFile;
 
 namespace RecordTrack.Persistance
 {
@@ -22,12 +28,19 @@ namespace RecordTrack.Persistance
             services.AddDbContext<RecordTrackDbContext>(options => options.UseSqlServer(Configuration.ConnectionString));
             services.AddSingleton<IRecordService, RecordService>();
 
-            services.AddScoped<ICustomerReadRepository, CustomerReadRepository>();
+            services.AddScoped<IReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
             services.AddScoped<IRecordReadRepository, RecordReadRepository>();
             services.AddScoped<IRecordWriteRepository, RecordWriteRepository>();
+            services.AddScoped<IFileWriteRepository, FileWriteRepository>();
+            services.AddScoped<IFileReadRepository, FileReadRepository>();
+            services.AddScoped<IRecordImageFileWriteRepository, RecordImageFileWriteRepository>();
+            services.AddScoped<IRecordImageFileReadRepository, RecordImageFileReadRepository>();
+            services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
+            services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+
         }
     }
 }

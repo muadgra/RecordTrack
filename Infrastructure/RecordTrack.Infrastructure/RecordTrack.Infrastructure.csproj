@@ -14,4 +14,9 @@
     <ProjectReference Include="..\..\Core\RecordTrack.Application\RecordTrack.Application.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Services\Storage\AWS\" />
+    <Folder Include="Services\Storage\Azure\" />
+  </ItemGroup>
+
 </Project>

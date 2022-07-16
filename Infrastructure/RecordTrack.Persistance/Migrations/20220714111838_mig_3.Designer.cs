@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecordTrack.Persistance.Contexts;
 
@@ -11,9 +12,10 @@ using RecordTrack.Persistance.Contexts;
 namespace RecordTrack.Persistance.Migrations
 {
     [DbContext(typeof(RecordTrackDbContext))]
-    partial class RecordTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220714111838_mig_3")]
+    partial class mig_3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,10 +78,6 @@ namespace RecordTrack.Persistance.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FilePath")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StorageType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

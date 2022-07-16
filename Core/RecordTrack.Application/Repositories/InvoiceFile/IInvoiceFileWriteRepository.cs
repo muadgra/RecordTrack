@@ -1,14 +1,13 @@
 ﻿using RecordTrack.Application.Abstractions;
-using RecordTrack.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordTrack.Application.Repositories
+namespace RecordTrack.Application.Repositories.InvoiceFile
 {
-    public interface IReadRepository : IReadRepository<Customer>
+    public interface IInvoiceFileWriteRepository : IWriteRepository<Domain.Entities.InvoiceFile>
     {
     }
 }

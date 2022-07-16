@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace RecordTrack.Application.Repositories
 {
-    public class CustomerReadRepository : ReadRepository<Customer>, ICustomerReadRepository
+    public class CustomerReadRepository : ReadRepository<Customer>, IReadRepository
     {
         public CustomerReadRepository(RecordTrackDbContext context) : base(context)
         {
