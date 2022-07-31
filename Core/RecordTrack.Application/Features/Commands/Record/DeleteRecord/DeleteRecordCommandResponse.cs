@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordTrack.Domain.Entities
+namespace RecordTrack.Application.Features.Commands.Record.DeleteRecord
 {
-    public class RecordImageFile : File
+    public class DeleteRecordCommandResponse
     {
-        public ICollection<Record> Records { get; set; }
     }
 }

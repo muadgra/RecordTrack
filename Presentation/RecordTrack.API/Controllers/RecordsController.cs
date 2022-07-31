@@ -1,7 +1,16 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecordTrack.Application.Abstractions;
 using RecordTrack.Application.Abstractions.Storage;
+using RecordTrack.Application.Features.Commands.Record.CreateRecord;
+using RecordTrack.Application.Features.Commands.Record.DeleteRecord;
+using RecordTrack.Application.Features.Commands.Record.UpdateRecord;
+using RecordTrack.Application.Features.Commands.RecordImageFile.RemoveRecordImage;
+using RecordTrack.Application.Features.Commands.RecordImageFile.UploadRecordImage;
+using RecordTrack.Application.Features.Queries.Record.GetAllRecords;
+using RecordTrack.Application.Features.Queries.Record.GetRecordById;
+using RecordTrack.Application.Features.Queries.RecordImageFile;
 using RecordTrack.Application.Repositories;
 using RecordTrack.Application.Repositories.File;
 using RecordTrack.Application.Repositories.InvoiceFile;
@@ -16,118 +25,63 @@ namespace RecordTrack.API.Controllers
     [ApiController]
     public class RecordsController : ControllerBase
     {
-        private readonly IRecordReadRepository _recordReadRepository;
-        private readonly IRecordWriteRepository _recordWriteRepository;
-        private IWebHostEnvironment _webHostEnvironment;
-        private readonly IFileWriteRepository _fileWriteRepository;
-        private readonly IFileReadRepository _fileReadRepository;
-        private readonly IRecordImageFileReadRepository _recordImageReadRepository;
-        private readonly IRecordImageFileWriteRepository _recordImageWriteRepository;
-        private readonly IInvoiceFileReadRepository _invoiceFileReadRepository;
-        private readonly IInvoiceFileWriteRepository _invoiceFileWriteRepository;
-        private readonly IStorageService _storageService;
-        public RecordsController(IRecordReadRepository recordReadRepository, 
-            IRecordWriteRepository recordWriteRepository, 
-            IWebHostEnvironment webHostEnvironment, 
-            IFileWriteRepository fileWriteRepository, 
-            IFileReadRepository fileReadRepository, 
-            IRecordImageFileReadRepository recordImageReadRepository,
-            IRecordImageFileWriteRepository recordImageWriteRepository,
-            IInvoiceFileReadRepository invoiceFileReadRepository, 
-            IInvoiceFileWriteRepository invoiceFileWriteRepository,
-            IStorageService storageService)
+        private readonly IMediator _mediator;
+        public RecordsController(IMediator mediator)
         {
-            _recordReadRepository = recordReadRepository;
-            _recordWriteRepository = recordWriteRepository;
-            _webHostEnvironment = webHostEnvironment;
-            _fileWriteRepository = fileWriteRepository;
-            _fileReadRepository = fileReadRepository;
-            _recordImageReadRepository = recordImageReadRepository;
-            _recordImageWriteRepository = recordImageWriteRepository;
-            _invoiceFileReadRepository = invoiceFileReadRepository;
-            _invoiceFileWriteRepository = invoiceFileWriteRepository;
-            _storageService = storageService;
+            _mediator = mediator;
         }
-
-        //[HttpGet]
-        //public async Task Get()
-        //{
-        //    Record r = await _recordReadRepository.GetByIdAsync(id, false);
-
-        //}
-
+        
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] Pagination pagination)
+        public async Task<IActionResult> Get([FromQuery] GetAllRecordsQueryRequest getAllRecordsQueryRequest)
         {
-            var totalCount = _recordReadRepository.GetAll(false).Count();
-            var records = _recordReadRepository.GetAll(false).Select(r => new
-            {
-                r.Id,
-                r.Name,
-                r.UpdateDate,
-                r.CreateDate,
-                r.Price,
-                r.Stock
-            }).Skip(pagination.Page * pagination.Size).Take(pagination.Size);
-            return Ok(new
-            {
-                totalCount,
-                records
-            });
+            GetAllRecordsQueryResponse response = await _mediator.Send(getAllRecordsQueryRequest);
+            return Ok(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(VM_Create_Record model)
+        public async Task<IActionResult> Create(CreateRecordCommandRequest createRecordCommandRequest)
         {
-            if(ModelState.IsValid)
-            _recordWriteRepository.AddAsync(new()
-            {
-                Name = model.Name,
-                Price = model.Price,
-                Stock = model.Stock
-            });
-            await _recordWriteRepository.SaveAsync();
-            return Ok();
+            CreateRecordCommandResponse response = await _mediator.Send(createRecordCommandRequest);
+
+            return Ok(response);
         }
         [HttpPut]
-        public async Task<IActionResult> Update(VM_Update_Record model, string id)
+        public async Task<IActionResult> Update(UpdateRecordCommandRequest request)
         {
-            Record record = await _recordReadRepository.GetByIdAsync(id);
-            record.Stock = model.Stock;
-            record.Name = model.Name;
-            record.Price = model.Price;
-            await _recordWriteRepository.SaveAsync();
-            return Ok();
+            return Ok(await _mediator.Send(request));
         }
 
-        [HttpDelete]
-        public async Task<IActionResult> Delete(string id)
+        [HttpDelete("{Id}")]
+        public async Task<IActionResult> Delete([FromRoute] DeleteRecordCommandRequest request)
         {
-            await _recordWriteRepository.Remove(id);
-            _recordWriteRepository.SaveAsync();
-            return Ok();
+            
+            return Ok(await _mediator.Send(request));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> Get(string id)
+        public async Task<IActionResult> Get([FromQuery] GetRecordByIdQueryRequest getRecordByIdRequest)
         {
-            return Ok(await _recordReadRepository.GetByIdAsync(id, false));
+            return Ok(await _mediator.Send(getRecordByIdRequest));
         }
 
         [HttpPost("[action]")]
-        public async Task<IActionResult> Upload()
+        public async Task<IActionResult> Upload(UploadRecordImageCommandRequest request)
         {
-           var data = await _storageService.UploadAsync("resource/files", Request.Form.Files);
-            await _recordImageWriteRepository.AddRangeAsync(data.Select(d => new RecordImageFile()
-            {
-                FileName = d.fileName,
-                FilePath = d.pathOrContainerName,
-                StorageType = _storageService.StorageName
-            }).ToList());
-            
+            await _mediator.Send(request);
             return Ok();
         }
 
+        [HttpGet("[action]/{id}")]
+        public async Task<IActionResult> GetRecordImages([FromRoute] GetRecordImagesQueryRequest request)
+        {
+            return Ok(_mediator.Send(request));
+        }
 
+        [HttpDelete("[action]/{recordId}/imageId")]
+        public async Task<IActionResult> DeleteRecordImage([FromRoute] RemoveRecordImageCommandRequest request, [FromQuery] string imageId)
+        {
+            request.ImageId = imageId;
+            return Ok(_mediator.Send(request));
+        }
     }
 }

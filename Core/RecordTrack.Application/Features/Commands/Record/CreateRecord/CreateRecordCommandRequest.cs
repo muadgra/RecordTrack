@@ -1,18 +1,16 @@
-﻿using RecordTrack.Domain.Entities.Common;
+﻿using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordTrack.Domain.Entities
+namespace RecordTrack.Application.Features.Commands.Record.CreateRecord
 {
-    public class Record : BaseEntity
+    public class CreateRecordCommandRequest : IRequest<CreateRecordCommandResponse>
     {
         public string Name { get; set; }
         public int Stock { get; set; }
         public float Price { get; set; }
-        public ICollection<Order> Orders { get; set; }
-        public ICollection<RecordImageFile> RecordImageFiles { get; set; }
     }
 }

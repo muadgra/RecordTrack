@@ -32,7 +32,7 @@ namespace RecordTrack.Persistance
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
-            services.AddScoped<IRecordReadRepository, RecordReadRepository>();
+            services.AddScoped<IRecordImageReadRepository, RecordReadRepository>();
             services.AddScoped<IRecordWriteRepository, RecordWriteRepository>();
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IFileReadRepository, FileReadRepository>();

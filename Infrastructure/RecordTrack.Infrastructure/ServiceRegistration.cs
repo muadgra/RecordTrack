@@ -3,6 +3,7 @@ using RecordTrack.Application.Abstractions.Storage;
 using RecordTrack.Infrastructure.Enums;
 using RecordTrack.Infrastructure.Services;
 using RecordTrack.Infrastructure.Services.Storage;
+using RecordTrack.Infrastructure.Services.Storage.Azure;
 using RecordTrack.Infrastructure.Services.Storage.Local;
 using System;
 using System.Collections.Generic;
@@ -18,29 +19,26 @@ namespace RecordTrack.Infrastructure
         {
             serviceCollection.AddScoped<IStorageService, StorageService>();
         }
-
-        public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : class, IStorage
+        public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {
             serviceCollection.AddScoped<IStorage, T>();
         }
-
-        public static void AddStorage<T>(this IServiceCollection serviceCollection, StorageType storageType)
+        public static void AddStorage(this IServiceCollection serviceCollection, StorageType storageType)
         {
             switch (storageType)
             {
                 case StorageType.Local:
-                    serviceCollection.AddScoped<IStorage,LocalStorage>();
+                    serviceCollection.AddScoped<IStorage, LocalStorage>();
                     break;
                 case StorageType.Azure:
                     //serviceCollection.AddScoped<IStorage, AzureStorage>();
                     break;
                 case StorageType.AWS:
-                    //serviceCollection.AddScoped<IStorage, AWSStorage>();
+
                     break;
                 default:
                     serviceCollection.AddScoped<IStorage, LocalStorage>();
                     break;
-
             }
         }
     }

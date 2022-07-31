@@ -1,7 +1,9 @@
 using FluentValidation.AspNetCore;
+using RecordTrack.Application;
 using RecordTrack.Application.Validators.Records;
 using RecordTrack.Infrastructure;
 using RecordTrack.Infrastructure.Filters;
+using RecordTrack.Infrastructure.Services.Storage.Azure;
 using RecordTrack.Infrastructure.Services.Storage.Local;
 using RecordTrack.Persistance;
 
@@ -10,7 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
-builder.Services.AddStorage<LocalStorage>();
+builder.Services.AddApplicationServices();
+//builder.Services.AddStorage<LocalStorage>();
+builder.Services.AddStorage<AzureStorage>();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy => 
     policy
     .WithOrigins("http://localhost:4200", "https://localhost:4200")

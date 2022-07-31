@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordTrack.Domain.Entities
+namespace RecordTrack.Application.Features.Commands.RecordImageFile.UploadRecordImage
 {
-    public class RecordImageFile : File
+    public class UploadRecordImageCommandResponse
     {
-        public ICollection<Record> Records { get; set; }
     }
 }

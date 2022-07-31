@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecordTrack.Domain.Entities
+namespace RecordTrack.Application.Abstractions.Storage.Azure
 {
-    public class RecordImageFile : File
+    public interface IAzureStorage : IStorage
     {
-        public ICollection<Record> Records { get; set; }
     }
 }

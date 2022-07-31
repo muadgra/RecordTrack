@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecordTrack.Persistance.Contexts;
 
@@ -11,9 +12,10 @@ using RecordTrack.Persistance.Contexts;
 namespace RecordTrack.Persistance.Migrations
 {
     [DbContext(typeof(RecordTrackDbContext))]
-    partial class RecordTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220723212710_mig_5")]
+    partial class mig_5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,21 +37,6 @@ namespace RecordTrack.Persistance.Migrations
                     b.HasIndex("RecordsId");
 
                     b.ToTable("OrderRecord");
-                });
-
-            modelBuilder.Entity("RecordRecordImageFile", b =>
-                {
-                    b.Property<Guid>("RecordImageFilesId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("RecordsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("RecordImageFilesId", "RecordsId");
-
-                    b.HasIndex("RecordsId");
-
-                    b.ToTable("RecordRecordImageFile");
                 });
 
             modelBuilder.Entity("RecordTrack.Domain.Entities.Customer", b =>
@@ -176,6 +163,11 @@ namespace RecordTrack.Persistance.Migrations
                 {
                     b.HasBaseType("RecordTrack.Domain.Entities.File");
 
+                    b.Property<Guid>("RecordId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasIndex("RecordId");
+
                     b.HasDiscriminator().HasValue("RecordImageFile");
                 });
 
@@ -184,21 +176,6 @@ namespace RecordTrack.Persistance.Migrations
                     b.HasOne("RecordTrack.Domain.Entities.Order", null)
                         .WithMany()
                         .HasForeignKey("OrdersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RecordTrack.Domain.Entities.Record", null)
-                        .WithMany()
-                        .HasForeignKey("RecordsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("RecordRecordImageFile", b =>
-                {
-                    b.HasOne("RecordTrack.Domain.Entities.RecordImageFile", null)
-                        .WithMany()
-                        .HasForeignKey("RecordImageFilesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -220,9 +197,25 @@ namespace RecordTrack.Persistance.Migrations
                     b.Navigation("Customer");
                 });
 
+            modelBuilder.Entity("RecordTrack.Domain.Entities.RecordImageFile", b =>
+                {
+                    b.HasOne("RecordTrack.Domain.Entities.Record", "Record")
+                        .WithMany("RecordImageFiles")
+                        .HasForeignKey("RecordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Record");
+                });
+
             modelBuilder.Entity("RecordTrack.Domain.Entities.Customer", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("RecordTrack.Domain.Entities.Record", b =>
+                {
+                    b.Navigation("RecordImageFiles");
                 });
 #pragma warning restore 612, 618
         }
