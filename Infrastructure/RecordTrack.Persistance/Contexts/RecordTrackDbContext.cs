@@ -1,6 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RecordTrack.Domain.Entities;
 using RecordTrack.Domain.Entities.Common;
+using RecordTrack.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace RecordTrack.Persistance.Contexts
 {
-    public class RecordTrackDbContext : DbContext
+    public class RecordTrackDbContext : IdentityDbContext<AppUser, AppRole, string>
     {
         public RecordTrackDbContext(DbContextOptions options) : base(options)
         {

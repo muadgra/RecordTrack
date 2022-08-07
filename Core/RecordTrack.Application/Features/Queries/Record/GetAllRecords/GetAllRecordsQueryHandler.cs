@@ -10,9 +10,9 @@ namespace RecordTrack.Application.Features.Queries.Record.GetAllRecords
 {
     public class GetAllRecordsQueryHandler : IRequestHandler<GetAllRecordsQueryRequest, GetAllRecordsQueryResponse>
     {
-        private readonly IRecordImageReadRepository _recordReadRepository;
+        private readonly IRecordReadRepository _recordReadRepository;
 
-        public GetAllRecordsQueryHandler(IRecordImageReadRepository recordReadRepository)
+        public GetAllRecordsQueryHandler(IRecordReadRepository recordReadRepository)
         {
             this._recordReadRepository = recordReadRepository;
         }

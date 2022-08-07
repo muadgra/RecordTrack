@@ -10,9 +10,9 @@ namespace RecordTrack.Application.Features.Queries.Record.GetRecordById
 {
     public class GetRecordByIdQueryHandler : IRequestHandler<GetRecordByIdQueryRequest, GetRecordByIdQueryResponse>
     {
-        readonly IRecordImageReadRepository _recordReadRepository;
+        readonly IRecordReadRepository _recordReadRepository;
 
-        public GetRecordByIdQueryHandler(IRecordImageReadRepository recordReadRepository)
+        public GetRecordByIdQueryHandler(IRecordReadRepository recordReadRepository)
         {
             _recordReadRepository = recordReadRepository;
         }

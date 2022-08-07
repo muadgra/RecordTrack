@@ -17,6 +17,7 @@ using RecordTrack.Persistance.Repositories.RecordImageFile;
 using RecordTrack.Application.Repositories.RecordImageFile;
 using RecordTrack.Persistance.Repositories.InvoiceFile;
 using RecordTrack.Application.Repositories.InvoiceFile;
+using RecordTrack.Domain.Entities.Identity;
 
 namespace RecordTrack.Persistance
 {
@@ -26,13 +27,26 @@ namespace RecordTrack.Persistance
         {
             
             services.AddDbContext<RecordTrackDbContext>(options => options.UseSqlServer(Configuration.ConnectionString));
+
+            services.AddIdentity<AppUser, AppRole>(options =>
+            {
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.User.RequireUniqueEmail = true;
+            }).AddEntityFrameworkStores<RecordTrackDbContext>();
+            
+            
             services.AddSingleton<IRecordService, RecordService>();
+
 
             services.AddScoped<IReadRepository, CustomerReadRepository>();
             services.AddScoped<ICustomerWriteRepository, CustomerWriteRepository>();
             services.AddScoped<IOrderReadRepository, OrderReadRepository>();
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>();
-            services.AddScoped<IRecordImageReadRepository, RecordReadRepository>();
+            services.AddScoped<IRecordReadRepository, RecordReadRepository>();
             services.AddScoped<IRecordWriteRepository, RecordWriteRepository>();
             services.AddScoped<IFileWriteRepository, FileWriteRepository>();
             services.AddScoped<IFileReadRepository, FileReadRepository>();
