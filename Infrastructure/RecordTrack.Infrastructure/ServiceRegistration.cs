@@ -1,10 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using RecordTrack.Application.Abstractions.Storage;
+using RecordTrack.Application.Abstractions.Token;
 using RecordTrack.Infrastructure.Enums;
 using RecordTrack.Infrastructure.Services;
 using RecordTrack.Infrastructure.Services.Storage;
 using RecordTrack.Infrastructure.Services.Storage.Azure;
 using RecordTrack.Infrastructure.Services.Storage.Local;
+using RecordTrack.Infrastructure.Services.Token;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace RecordTrack.Infrastructure
         public static void AddInfrastructureServices(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped<IStorageService, StorageService>();
+            serviceCollection.AddScoped<ITokenHandler, TokenHandler>();
         }
         public static void AddStorage<T>(this IServiceCollection serviceCollection) where T : Storage, IStorage
         {

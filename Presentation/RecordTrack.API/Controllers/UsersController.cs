@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RecordTrack.Application.Abstractions.Token;
 using RecordTrack.Application.Features.Commands.AppUser.CreateUser;
 using RecordTrack.Application.Features.Commands.AppUser.LoginUser;
 
@@ -26,8 +27,8 @@ namespace RecordTrack.API.Controllers
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(LoginUserCommandRequest request)
         {
-             await _mediator.Send(request);
-            return Ok();
+            var response = await _mediator.Send(request);
+            return Ok(response);
         }
     }
 }

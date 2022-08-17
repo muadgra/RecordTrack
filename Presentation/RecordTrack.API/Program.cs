@@ -1,4 +1,6 @@
 using FluentValidation.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using RecordTrack.Application;
 using RecordTrack.Application.Validators.Records;
 using RecordTrack.Infrastructure;
@@ -6,6 +8,7 @@ using RecordTrack.Infrastructure.Filters;
 using RecordTrack.Infrastructure.Services.Storage.Azure;
 using RecordTrack.Infrastructure.Services.Storage.Local;
 using RecordTrack.Persistance;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +33,25 @@ builder.Services.AddControllers(options => options.Filters.Add<ValidationFilter>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer("Admin", options =>
+    {
+        options.TokenValidationParameters = new()
+        {
+            ValidateAudience = true, //Oluþturulacak tokený hangi originlerin kullanacaðýný belirler
+            ValidateIssuer = true, //Tokený kim daðýtacak?
+            ValidateLifetime = true, //Tokenýn süresini kontrol et
+            ValidateIssuerSigningKey = true, //tokenýn uygulamamýza ait olduðunu belirten key verisini doðrular
+            
+            
+            ValidAudience = builder.Configuration["Token:Audience"],
+            ValidIssuer = builder.Configuration["Token:Issuer"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"]))
+        
+        };
+    });
+    
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -42,6 +64,8 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecordTrack.Application.Abstractions;
@@ -23,6 +24,7 @@ namespace RecordTrack.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Admin")]
     public class RecordsController : ControllerBase
     {
         private readonly IMediator _mediator;
