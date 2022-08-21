@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using RecordTrack.Application.Abstractions.DTOs.User;
 using RecordTrack.Application.Abstractions.Services;
+using RecordTrack.Application.Exceptions;
 using RecordTrack.Domain.Entities.Identity;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,17 @@ namespace RecordTrack.Persistance.Services
 
             return response;
 
+        }
+
+        public async Task UpdateRefreshToken(string refreshToken, AppUser user, DateTime accessTokenDate, int refreshTokenLifeTime)
+        {
+            if (user != null)
+            {
+                user.RefreshToken = refreshToken;
+                user.RefreshTokenEndDate = accessTokenDate.AddMinutes(refreshTokenLifeTime);
+                await _userManager.UpdateAsync(user);
+            }
+            else throw new UserNotFoundException();
         }
     }
 }

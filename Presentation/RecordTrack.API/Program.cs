@@ -8,6 +8,9 @@ using RecordTrack.Infrastructure.Filters;
 using RecordTrack.Infrastructure.Services.Storage.Azure;
 using RecordTrack.Infrastructure.Services.Storage.Local;
 using RecordTrack.Persistance;
+using Serilog;
+using Serilog.Core;
+using System.Security.Claims;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +27,13 @@ builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
     .AllowAnyHeader()
     .AllowAnyMethod()
 ));
+Logger logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("log/log.txt")
+    .WriteTo.MSSqlServer(builder.Configuration.GetConnectionString("MSSQL"), "Logs", autoCreateSqlTable: true)
+    .CreateLogger();
+builder.Host.UseSerilog(logger);
+
 builder.Services.AddControllers()
     .AddFluentValidation(configuration => configuration.RegisterValidatorsFromAssemblyContaining<CreateRecordValidator>())
     .ConfigureApiBehaviorOptions(options => options.SuppressModelStateInvalidFilter = true);
@@ -47,7 +57,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidAudience = builder.Configuration["Token:Audience"],
             ValidIssuer = builder.Configuration["Token:Issuer"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Token:SecurityKey"])),
-            LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false
+            LifetimeValidator = (notBefore, expires, securityToken, validationParameters) => expires != null ? expires > DateTime.UtcNow : false,
+            NameClaimType = ClaimTypes.Name // JWT'deki Name Claim'ine karþýlýk gelen deðeri User.Identity.Name propertyisinden elde eder.
         
         };
     });

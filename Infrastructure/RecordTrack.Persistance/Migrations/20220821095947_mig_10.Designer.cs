@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RecordTrack.Persistance.Contexts;
 
@@ -11,9 +12,10 @@ using RecordTrack.Persistance.Contexts;
 namespace RecordTrack.Persistance.Migrations
 {
     [DbContext(typeof(RecordTrackDbContext))]
-    partial class RecordTrackDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220821095947_mig_10")]
+    partial class mig_10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

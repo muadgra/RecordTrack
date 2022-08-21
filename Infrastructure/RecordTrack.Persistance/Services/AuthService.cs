@@ -22,16 +22,18 @@ namespace RecordTrack.Persistance.Services
         readonly UserManager<AppUser> _userManager;
         readonly ITokenHandler _tokenHandler;
         readonly SignInManager<AppUser> _signInManager;
+        readonly IUserService _userService;
         public AuthService(IConfiguration configuration, HttpClient httpClient, UserManager<AppUser> userManager, 
-            ITokenHandler tokenHandler, SignInManager<AppUser> signInManager)
+            ITokenHandler tokenHandler, SignInManager<AppUser> signInManager, IUserService userService)
         {
             _configuration = configuration;
             _httpClient = httpClient;
             _userManager = userManager;
             _tokenHandler = tokenHandler;
             _signInManager = signInManager;
+            _userService = userService;
         }
-       public async Task<Token> CreateExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int accessTokenLifeTime)
+       public async Task<Token> CreateExternalAsync(AppUser user, string email, string name, UserLoginInfo info, int addOnAccessTokenDate)
         {
             bool result = user != null;
             if (user == null)
@@ -56,7 +58,10 @@ namespace RecordTrack.Persistance.Services
             {
                 await _userManager.AddLoginAsync(user, info); //AspNetUserLogins
 
-                Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                Token token = _tokenHandler.CreateAccessToken(addOnAccessTokenDate, user);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 5);
+
+                
                 return token;
             }
             throw new Exception("Invalid external authentication.");
@@ -73,7 +78,7 @@ namespace RecordTrack.Persistance.Services
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
 
             var info = new UserLoginInfo("GOOGLE", payload.Subject, "GOOGLE");
-            Domain.Entities.Identity.AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            AppUser user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
 
             return await CreateExternalAsync(user, payload.Email, payload.Name, info, accessTokenLifeTime);
         }
@@ -92,11 +97,24 @@ namespace RecordTrack.Persistance.Services
             SignInResult result = await _signInManager.CheckPasswordSignInAsync(user, password, false);
             if (result.Succeeded) //Authentication başarılı!
             {
-                Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime);
+                Token token = _tokenHandler.CreateAccessToken(accessTokenLifeTime, user);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 5);
                 return token;
             }
             throw new AuthenticationErrorException();
         }
 
+        public async Task<Token> RefreshTokenLoginAsync(string refreshToken)
+        {
+            AppUser? user = _userManager.Users.FirstOrDefault(x => x.Id == refreshToken);
+            if(user != null && user?.RefreshTokenEndDate > DateTime.UtcNow)
+            {
+                Token token = _tokenHandler.CreateAccessToken(15, user);
+                await _userService.UpdateRefreshToken(token.RefreshToken, user, token.Expiration, 15);
+                return token;
+            }
+
+            throw new UserNotFoundException();
+        }
     }
 }

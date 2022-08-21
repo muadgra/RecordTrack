@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecordTrack.Application.Features.Commands.AppUser.GoogleLoginUser;
 using RecordTrack.Application.Features.Commands.AppUser.LoginUser;
+using RecordTrack.Application.Features.Queries.RefreshTokenLogin;
 
 namespace RecordTrack.API.Controllers
 {
@@ -21,6 +22,13 @@ namespace RecordTrack.API.Controllers
         public async Task<IActionResult> Login(LoginUserCommandRequest request)
         {
             var response = await _mediator.Send(request);
+            return Ok(response);
+        }
+
+        [HttpPost("[action]")]
+        public async Task<IActionResult> RefreshTokenLogin([FromBody] RefreshTokenLoginCommandRequest request)
+        {
+            RefreshTokenLoginCommandResponse response = await _mediator.Send(request);
             return Ok(response);
         }
 
