@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using RecordTrack.Application.Abstractions;
 using RecordTrack.Persistance.Concretes;
@@ -18,6 +20,9 @@ using RecordTrack.Application.Repositories.RecordImageFile;
 using RecordTrack.Persistance.Repositories.InvoiceFile;
 using RecordTrack.Application.Repositories.InvoiceFile;
 using RecordTrack.Domain.Entities.Identity;
+using RecordTrack.Application.Abstractions.Services;
+using RecordTrack.Application.Abstractions.Services.Authentication;
+using RecordTrack.Persistance.Services;
 
 namespace RecordTrack.Persistance
 {
@@ -25,7 +30,7 @@ namespace RecordTrack.Persistance
     {
         public static void AddPersistenceServices(this IServiceCollection services)
         {
-            
+
             services.AddDbContext<RecordTrackDbContext>(options => options.UseSqlServer(Configuration.ConnectionString));
 
             services.AddIdentity<AppUser, AppRole>(options =>
@@ -37,8 +42,8 @@ namespace RecordTrack.Persistance
                 options.Password.RequireUppercase = false;
                 options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<RecordTrackDbContext>();
-            
-            
+
+
             services.AddSingleton<IRecordService, RecordService>();
 
 
@@ -55,6 +60,11 @@ namespace RecordTrack.Persistance
             services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
             services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
 
+
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IExternalAuthentication, AuthService>();
+            services.AddScoped<IInternalAuthentication, AuthService>();
         }
     }
 }

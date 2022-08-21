@@ -12,8 +12,8 @@ namespace RecordTrack.Application
     {
         public static void AddApplicationServices(this IServiceCollection collection)
         {
-            //Assembly'de bulunan tüm sınıfları bul ve ona göre sisteme ekle.
             collection.AddMediatR(typeof(ServiceRegistration));
+            collection.AddHttpClient();
         }
     }
 

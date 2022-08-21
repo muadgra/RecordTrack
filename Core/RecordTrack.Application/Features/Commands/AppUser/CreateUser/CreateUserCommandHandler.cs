@@ -1,39 +1,35 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using RecordTrack.Application.Abstractions.DTOs.User;
+using RecordTrack.Application.Abstractions.Services;
 using RecordTrack.Application.Exceptions;
 
 namespace RecordTrack.Application.Features.Commands.AppUser.CreateUser
 {
     public class CreateUserCommandHandler : IRequestHandler<CreateUserCommandRequest, CreateUserCommandResponse>
     {
-        readonly UserManager<Domain.Entities.Identity.AppUser> _userManager;
+        readonly IUserService _userService;
 
-        public CreateUserCommandHandler(UserManager<Domain.Entities.Identity.AppUser> userManager)
+        public CreateUserCommandHandler(IUserService userService)
         {
-            _userManager = userManager;
+            _userService = userService;
         }
         public async Task<CreateUserCommandResponse> Handle(CreateUserCommandRequest request, CancellationToken cancellationToken)
         {
-            IdentityResult result = await _userManager.CreateAsync(new()
+
+            CreateUserResponse response = await _userService.CreateAsync(new()
             {
-                Id = Guid.NewGuid().ToString(),
-                UserName = request.Username,
                 Email = request.Email,
                 Name = request.Name,
                 Surname = request.Surname,
-            }, request.Password);
-            if (result.Succeeded)
-            {
-                return new()
-                {
-                    Success = true,
-                    Message = "User has been created"
-                };
-            }
+                Password = request.Password,
+                PasswordConfirm = request.PasswordConfirm,
+                Username = request.Username
+            });
             return new()
             {
-                Success = false,
-                Message = "Error while creating a user"
+                Success = response.Success,
+                Message = response.Message
             };
         }
     }

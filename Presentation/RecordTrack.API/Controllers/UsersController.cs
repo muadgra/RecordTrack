@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecordTrack.Application.Abstractions.Token;
 using RecordTrack.Application.Features.Commands.AppUser.CreateUser;
+using RecordTrack.Application.Features.Commands.AppUser.GoogleLoginUser;
 using RecordTrack.Application.Features.Commands.AppUser.LoginUser;
 
 namespace RecordTrack.API.Controllers
@@ -24,11 +25,6 @@ namespace RecordTrack.API.Controllers
             return Ok(response);
         }
 
-        [HttpPost("[action]")]
-        public async Task<IActionResult> Login(LoginUserCommandRequest request)
-        {
-            var response = await _mediator.Send(request);
-            return Ok(response);
-        }
+        
     }
 }
