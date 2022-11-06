@@ -1,6 +1,7 @@
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using RecordTrack.API.Extensions;
 using RecordTrack.Application;
 using RecordTrack.Application.Validators.Records;
 using RecordTrack.Infrastructure;
@@ -72,6 +73,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
 //call cors options which are described above as middleware
 app.UseStaticFiles();
 app.UseCors();
